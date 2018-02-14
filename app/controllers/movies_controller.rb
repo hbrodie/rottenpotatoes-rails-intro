@@ -11,12 +11,22 @@ class MoviesController < ApplicationController
   end
 
   def index
+    params.keys.each do |pa|
+      session[pa] = params[pa]
+    end
     if params.key?(:ratings)
       @filtered_ratings = params[:ratings].keys
-      @movies = Movie.order(params[:sort]).where(rating: @filtered_ratings)
+    elsif session.key?(:ratings)
+      @filtered_ratings = session[:ratings].keys
     else
-      @movies = Movie.order(params[:sort])
       @filtered_ratings = Movie.all_ratings
+    end
+    if params.key?(:sort)
+      @movies = Movie.order(params[:sort]).where(rating: @filtered_ratings)
+    elsif session.key?(:sort)
+      @movies = Movie.order(session[:sort]).where(rating: @filtered_ratings)
+    else
+      @movies = Movie.order(params[:sort]).where(rating: @filtered_ratings)
     end
     @all_ratings = Movie.all_ratings
   end
