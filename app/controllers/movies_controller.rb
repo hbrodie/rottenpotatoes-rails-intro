@@ -11,6 +11,12 @@ class MoviesController < ApplicationController
   end
 
   def index
+    if not session.key?(:ratings)
+      session[:ratings] = Hash[Movie.all_ratings.map {|x| [x,1]}]
+    end
+    if not session.key?(:sort)
+      session[:sort] = "title"
+    end
     #params.keys.each do |pa|
     # session[pa] = params[pa]
     if params.key?(:ratings)
@@ -74,14 +80,14 @@ class MoviesController < ApplicationController
     @all_ratings = Movie.Ratings
   end
   
-  def sort_title
-    @movies = Movie.order(params[:title])
-    redirect_to movies_path
-  end
+  # def sort_title
+  #   @movies = Movie.order(params[:title])
+  #   redirect_to movies_path
+  # end
   
-  def sort_date
-    @movies = Movie.order(params[:release_date])
-    redirect_to movies_path
-  end
+  # def sort_date
+  #   @movies = Movie.order(params[:release_date])
+  #   redirect_to movies_path
+  # end
 
 end
